@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" method="upgrade" group="slogin_auth">
+	<name>Social Login UWUM auth</name>
+	<author>Ioannis Tsampoulatidis</author>
+	<creationDate>19.09.2016</creationDate>
+	<copyright>(C) 2016. All rights reserved.</copyright>
+	<license>GNU/GPL v.3 or later.</license>
+	<authorEmail>itsam@infalia.com</authorEmail>
+	<authorUrl>http://infalia.com</authorUrl>
+	<version>0.1-alpha</version>
+	<description>Unified WeGovNow User Management (UWUM) authorization plugin</description>
+	<files>
+		<filename plugin="uwum">uwum.php</filename>
+		<filename>index.html</filename>
+		<folder>assets</folder>
+		<folder>element</folder>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic" addfieldpath="plugins/slogin_auth/uwum/element">
+				
+				<field name="id" type="text" default=""
+					description="Client ID"
+					label="Client ID" />
+
+				<field name="password" type="text" default=""
+					description="Client secret"
+					label="Client secret" />
+
+				<field name="cert" type="text" default=""
+					description="Certificate"
+					label="Path to (.pem) certificate"	/>
+
+				<field name="callback_url" type="callbackurl"
+					label="Callback URL"
+					description="Callback URL"
+					filter="unset"
+					value="uwum"
+					readonly="true"
+					class="readonly" />
+
+			</fieldset>
+		</fields>
+	</config>
+</extension>
