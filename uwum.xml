@@ -3,11 +3,12 @@
 	<name>Social Login UWUM auth</name>
 	<author>Ioannis Tsampoulatidis</author>
 	<creationDate>19.09.2016</creationDate>
-	<copyright>(C) 2016. All rights reserved.</copyright>
+	<updateDate>28.09.2017</updateDate>
+	<copyright>(C) 2016-2017. All rights reserved.</copyright>
 	<license>GNU/GPL v.3 or later.</license>
 	<authorEmail>itsam@infalia.com</authorEmail>
-	<authorUrl>http://infalia.com</authorUrl>
-	<version>0.1-alpha</version>
+	<authorUrl>https://infalia.com</authorUrl>
+	<version>0.2</version>
 	<description>Unified WeGovNow User Management (UWUM) authorization plugin</description>
 	<files>
 		<filename plugin="uwum">uwum.php</filename>
@@ -30,6 +31,22 @@
 				<field name="cert" type="text" default=""
 					description="Certificate"
 					label="Path to (.pem) certificate"	/>
+
+				<field name="authorization_url" type="text" 
+					default="https://wegovnow.liquidfeedback.com/api/1/authorization" 
+					label="Authorization URL" />
+
+				<field name="token_url" type="text" 
+					default="https://wegovnow-cert.liquidfeedback.com/api/1/token" 
+					label="Token URL" />
+
+				<field name="info_url" type="text" 
+					default="https://wegovnow.liquidfeedback.com/api/1/info" 
+					label="Info URL" />
+
+				<field name="notifyemail_url" type="text" 
+					default="https://wegovnow.liquidfeedback.com/api/1/notify_email" 
+					label="Notify email URL" />
 
 				<field name="callback_url" type="callbackurl"
 					label="Callback URL"

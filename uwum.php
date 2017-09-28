@@ -2,8 +2,8 @@
 /**
  * UWUM Login based on Joomline SLogin
  *
- * @version     0.1
- * @author      Ioannis Tsampoulatidis, Infalia
+ * @version     0.2
+ * @author      Ioannis Tsampoulatidis, Infalia Private Company
  * @license     GNU/GPL v.3 or later.
  */
 
@@ -19,7 +19,7 @@ class plgSlogin_authUwum extends JPlugin
 			$remotelUrl = JURI::getInstance($_SERVER['HTTP_REFERER'])->toString(array('host'));
 			$localUrl = JURI::getInstance()->toString(array('host'));
 			if($remotelUrl != $localUrl){
-				die('Remote authorization not allowed');
+				die('Remote authorization is not allowed');
 			}
 		}
 
@@ -33,7 +33,8 @@ class plgSlogin_authUwum extends JPlugin
 			'state=' . hash('sha256', microtime(TRUE).rand().$_SERVER['REMOTE_ADDR'])
 		);
 		$params = implode('&', $params);
-		$url = 'https://wegovnow.liquidfeedback.com/api/1/authorization?'.$params;
+		//$url = 'https://wegovnow-pt2.liquidfeedback.com/api/1/authorization?'.$params;
+		$url = $this->params->get('authorization_url') . '?' . $params;
 		return $url;
 	}
 
@@ -69,7 +70,13 @@ class plgSlogin_authUwum extends JPlugin
 			);
 
 			//also use the signed pem by UWUM Authority
-			$curl = curl_init( "https://wegovnow-cert.liquidfeedback.com/api/1/token" );
+			//$curl = curl_init( "https://wegovnow-pt2-cert.liquidfeedback.com/api/1/token" );
+			$curl = curl_init( $this->params->get('token_url') );
+
+			$fp = fopen(dirname(__FILE__).'/errorlog.txt', 'w');
+			curl_setopt($curl, CURLOPT_VERBOSE, 1);
+			curl_setopt($curl, CURLOPT_STDERR, $fp);
+
 			curl_setopt($curl, CURLOPT_POST, 1);
 			curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
 			curl_setopt($curl, CURLOPT_HEADER, 0);
@@ -77,18 +84,17 @@ class plgSlogin_authUwum extends JPlugin
 			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
 			curl_setopt($curl, CURLOPT_SSLCERTTYPE, 'PEM'); 
 			curl_setopt($curl, CURLOPT_SSLCERT, $this->params->get('cert'));
-		
 			$auth = curl_exec( $curl );
 			curl_close($curl);
 
 			$secret = json_decode($auth);
 
 			if(empty($secret)){
-				echo 'WGN Error - empty access token';
+				echo 'WeGovNow Error - empty access token';
 				exit;
 			}
 			if(!empty($secret->error)){
-				echo 'WGN Error - '. $secret->error_description;
+				echo 'WeGovNow Error - '. $secret->error_description;
 				exit;
 			}
 
@@ -102,7 +108,8 @@ class plgSlogin_authUwum extends JPlugin
 				'include_member' => 1
 			);	    
 
-			$curl = curl_init( "https://wegovnow.liquidfeedback.com/api/1/info" );
+			//$curl = curl_init( "https://wegovnow-pt2.liquidfeedback.com/api/1/info" );
+			$curl = curl_init( $this->params('info_url') );
 			curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Authorization: Bearer ' . $access_key ) );
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($curl, CURLOPT_POSTFIELDS, $params_info);
@@ -127,7 +134,8 @@ class plgSlogin_authUwum extends JPlugin
 			$returnRequest->first_name      = $request->member->name;
 
 			//we also need the email
-			$curl = curl_init( "https://wegovnow.liquidfeedback.com/api/1/notify_email" );
+			$curl = curl_init( $this->params('notifyemail_url') );
+			//$curl = curl_init( "https://wegovnow-pt2.liquidfeedback.com/api/1/notify_email" );
 			curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Authorization: Bearer ' . $access_key ) );
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($curl, CURLOPT_POSTFIELDS, $params_info);
