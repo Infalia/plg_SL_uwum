@@ -25,16 +25,16 @@ class plgSlogin_authUwum extends JPlugin
 
 		$redirect = JURI::base().'?option=com_slogin&task=check&plugin=uwum';
 
-		$params = array(
+		$prms = array(
 			'client_id=' . $this->params->get('id'),
 			'redirect_uri=' . urlencode($redirect),
 			'response_type=code',
 			'scope=identification notify_email_detached',
 			'state=' . hash('sha256', microtime(TRUE).rand().$_SERVER['REMOTE_ADDR'])
 		);
-		$params = implode('&', $params);
+		$prms = implode('&', $prms);
 		//$url = 'https://wegovnow-pt2.liquidfeedback.com/api/1/authorization?'.$params;
-		$url = $this->params->get('authorization_url') . '?' . $params;
+		$url = $this->params->get('authorization_url') . '?' . $prms;
 		return $url;
 	}
 
@@ -60,7 +60,7 @@ class plgSlogin_authUwum extends JPlugin
 			// get access_token
 			$redirect = JURI::base().'?option=com_slogin&task=check&plugin=uwum';
 
-			$params = array(
+			$prms = array(
 				'client_id' => $this->params->get('id'),
 				'redirect_uri' => $redirect,
 				'client_secret' => $this->params->get('password'),
@@ -78,7 +78,7 @@ class plgSlogin_authUwum extends JPlugin
 			curl_setopt($curl, CURLOPT_STDERR, $fp);
 
 			curl_setopt($curl, CURLOPT_POST, 1);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $prms);
 			curl_setopt($curl, CURLOPT_HEADER, 0);
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -109,7 +109,7 @@ class plgSlogin_authUwum extends JPlugin
 			);	    
 
 			//$curl = curl_init( "https://wegovnow-pt2.liquidfeedback.com/api/1/info" );
-			$curl = curl_init( $this->params('info_url') );
+			$curl = curl_init( $this->params->get('info_url') );
 			curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Authorization: Bearer ' . $access_key ) );
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($curl, CURLOPT_POSTFIELDS, $params_info);
@@ -134,7 +134,7 @@ class plgSlogin_authUwum extends JPlugin
 			$returnRequest->first_name      = $request->member->name;
 
 			//we also need the email
-			$curl = curl_init( $this->params('notifyemail_url') );
+			$curl = curl_init( $this->params->get('notifyemail_url') );
 			//$curl = curl_init( "https://wegovnow-pt2.liquidfeedback.com/api/1/notify_email" );
 			curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Authorization: Bearer ' . $access_key ) );
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
