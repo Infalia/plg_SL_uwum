@@ -39,7 +39,7 @@ class JFormFieldCallbackUrl extends JFormField
              $CallbackUrl = substr($CallbackUrl, 0, -1);
         }
 		
-		$html = '<input type="text" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'.$CallbackUrl.'" size="70%" '. $class . $readonly .' />';
+		$html = '<input type="text" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'.$CallbackUrl.'" size="100%" '. $class . $readonly .' />';
 		
 		return $html;
 	}
